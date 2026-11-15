@@ -1,0 +1,61 @@
+NUSUK CODE SUBMISSION PORTAL - FREE DEPLOYMENT GUIDE
+
+IMPORTANT:
+GitHub is for storing your code. GitHub Pages cannot run this Flask/Python backend.
+A free PythonAnywhere account is a simple option to host a small Flask app.
+Free hosting limits and policies can change; check the provider's current plan page.
+
+OPTION A: PythonAnywhere (simple free start)
+1. Create an account at https://www.pythonanywhere.com/
+2. Open the Dashboard, go to Consoles, start a Bash console.
+3. Clone your public GitHub repository:
+   git clone https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPOSITORY.git
+4. Enter the project folder:
+   cd YOUR_REPOSITORY
+5. Create a virtual environment:
+   python3 -m venv .venv
+   source .venv/bin/activate
+6. Install packages:
+   pip install -r requirements.txt
+7. Go to the Web tab > Add a new web app.
+8. Choose Manual configuration and select a Python version available in your account.
+9. In the Web tab, open the WSGI configuration file.
+10. Replace its contents with the contents of pythonanywhere_wsgi.py, updating:
+    /home/YOUR_PYTHONANYWHERE_USERNAME/YOUR_REPOSITORY
+    to your actual username and folder name.
+11. In the Web tab, set the virtualenv path to:
+    /home/YOUR_PYTHONANYWHERE_USERNAME/YOUR_REPOSITORY/.venv
+12. Click Reload.
+13. Open https://YOUR_PYTHONANYWHERE_USERNAME.pythonanywhere.com/
+
+IMPORTANT FOR DATA:
+- SQLite database and Excel are written in the project folder by default.
+- Keep the database in your persistent home directory, not /tmp.
+- Back up submissions.db and submissions.xlsx regularly.
+- If you redeploy by pulling code, do not delete these data files.
+- Free plan quotas/features may limit traffic and resources.
+
+ADMIN SECURITY:
+Set ADMIN_PASSWORD and SECRET_KEY securely. Never commit real passwords or secret keys to GitHub.
+For PythonAnywhere, set environment variables in the WSGI config before importing app, e.g.:
+import os
+os.environ["ADMIN_PASSWORD"] = "your-long-unique-password"
+os.environ["SECRET_KEY"] = "your-long-random-secret"
+Do not leave the example password on a public website.
+
+OPTION B: Render
+1. Push app.py and requirements.txt to GitHub.
+2. Render > New > Web Service > connect repository.
+3. Build: pip install -r requirements.txt
+4. Start: gunicorn app:app
+5. Add Environment Variables: ADMIN_PASSWORD and SECRET_KEY.
+6. Add a Persistent Disk mounted at /var/data, and set DATA_DIR=/var/data.
+7. Deploy.
+NOTE: Render free web services have ephemeral filesystem and may sleep; a persistent disk is not included in the free service tier. Do not rely on Render free local storage for permanent SQLite/Excel records.
+
+FILES:
+- app.py
+- requirements.txt
+- pythonanywhere_wsgi.py
+- README_BN.txt
+- DEPLOY_GUIDE_BN.txt
